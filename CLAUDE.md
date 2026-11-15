@@ -7,7 +7,7 @@ Detalhes de páginas, tabelas e segredos no `README.md`.
 - Publicidade de advocacia: nada de promessa de resultado, economia garantida, comparação com concorrentes ou tom de venda agressiva. Texto informativo e sóbrio. Preço e textos de oferta passam pela validação do Paulo (regras da OAB).
 - Holding nunca apresentada como forma de fugir de dívidas.
 - RLS em todas as tabelas, sem SELECT público. Nenhuma chave secreta no front-end (só a publicável do Supabase). Chaves do Resend e do Asaas só nos segredos do Supabase, colocadas pelo dono da conta; nunca pedir para colar na conversa.
-- Visitas: só números, sem IP nem cookies. Fontes servidas localmente (sem Google Fonts).
+- Visitas: só números, sem IP. O pixel da Meta (cookies) está ligado e declarado na política de privacidade. Fontes servidas localmente (sem Google Fonts).
 - Links relativos em todas as páginas (o site roda em subcaminho no github.io).
 - Dados pendentes ficam em `assets/config.js`; não inventar OAB, WhatsApp, preço ou CNPJ.
 

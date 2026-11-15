@@ -114,7 +114,17 @@
     window.fbq("init", S.metaPixel);
     window.fbq("track", "PageView");
     var evento = document.body.getAttribute("data-evento");
-    if (evento) window.fbq("track", evento);
+    if (evento === "Purchase") {
+      // A Meta pede valor e moeda na compra; o valor vem do preço da sessão no config.
+      var valor = Number(String(S.precoSessao || "").replace(/[^\d,]/g, "").replace(",", "."));
+      window.fbq("track", "Purchase", valor ? { value: valor, currency: "BRL" } : { currency: "BRL" });
+    } else if (evento) {
+      window.fbq("track", evento);
+    }
+    // Clique em "Confirmar e agendar" (ida para o pagamento).
+    document.querySelectorAll('[data-link="linkPagamento"]').forEach(function (el) {
+      el.addEventListener("click", function () { window.fbq("track", "InitiateCheckout"); });
+    });
   }
 
   // Formulário do checklist.

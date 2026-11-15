@@ -18,5 +18,5 @@ window.SITE = {
   linkPagamento: "",    // link de pagamento do Asaas
   linkAgenda: "",       // página de agendamento (ex.: agenda do Google com horários abertos)
 
-  metaPixel: "",        // ID do pixel da Meta, quando o tráfego pago começar
+  metaPixel: "1614948597068173", // pixel da Meta
 };
