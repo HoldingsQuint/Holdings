@@ -1,0 +1,17 @@
+# Uma chamada por dia ao banco para o projeto gratuito do Supabase não pausar por inatividade.
+# Não conta como visita.
+name: Manter Supabase ativo
+on:
+  schedule:
+    - cron: "17 11 * * *"   # todo dia, 08:17 em Brasília
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping
+        run: |
+          curl -fsS -X POST "https://tdvjswuggnusoqosltxa.supabase.co/functions/v1/registrar-visita" \
+            -H "Content-Type: application/json" \
+            -H "apikey: sb_publishable_D3nOZGWJ0c6xDdNQxiCafA_3sN8ckSY" \
+            -d '{"ping":true}'
