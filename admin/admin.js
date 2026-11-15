@@ -1,6 +1,8 @@
 // Painel: login, números do período, contatos e mudança de situação.
 // A segurança está no banco (RLS): só quem está na tabela admins lê alguma coisa.
 (function () {
+  // Não deixa o painel abrir dentro de outro site (clickjacking).
+  if (window.top !== window.self) { document.documentElement.style.display = "none"; window.top.location = window.self.location; return; }
   var S = window.SITE;
   var db = window.supabase.createClient(S.supabaseUrl, S.supabaseKey);
   var dias = 30;
@@ -127,12 +129,58 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    var comSenha = false;
+    $("alternar").addEventListener("click", function (e) {
+      e.preventDefault();
+      comSenha = !comSenha;
+      $("campo-senha").classList.toggle("oculto", !comSenha);
+      $("l-senha").required = comSenha;
+      $("b-entrar").textContent = comSenha ? "Entrar" : "Receber link de acesso por e-mail";
+      this.textContent = comSenha ? "Receber link por e-mail" : "Entrar com senha";
+    });
+
     $("form-login").addEventListener("submit", async function (e) {
       e.preventDefault();
       var erro = $("erro-login"); erro.classList.remove("visivel");
-      var r = await db.auth.signInWithPassword({ email: $("l-email").value.trim(), password: $("l-senha").value });
-      if (r.error) { erro.textContent = "E-mail ou senha incorretos."; erro.classList.add("visivel"); return; }
-      sessao();
+      var ok = $("ok-login"); ok.classList.add("oculto");
+      var email = $("l-email").value.trim();
+      var botao = $("b-entrar"); botao.disabled = true;
+      if (comSenha) {
+        var r = await db.auth.signInWithPassword({ email: email, password: $("l-senha").value });
+        botao.disabled = false;
+        if (r.error) { erro.textContent = "E-mail ou senha incorretos. Se ainda não criou senha, use o link por e-mail."; erro.classList.add("visivel"); return; }
+        return; // a sessão abre pelo onAuthStateChange
+      }
+      // Link de acesso: só para contas já cadastradas (não cria conta nova).
+      var volta = location.origin + location.pathname;
+      var r2 = await db.auth.signInWithOtp({ email: email, options: { shouldCreateUser: false, emailRedirectTo: volta } });
+      botao.disabled = false;
+      if (r2.error && /rate|limit/i.test(r2.error.message)) {
+        erro.textContent = "Muitos pedidos de link em pouco tempo. Espere alguns minutos e tente de novo.";
+        erro.classList.add("visivel");
+        return;
+      }
+      // Resposta igual para e-mail cadastrado ou não, para não revelar quem tem acesso.
+      ok.textContent = "Se este e-mail tiver acesso, o link chega em instantes. Abra pelo mesmo navegador ou pelo celular.";
+      ok.classList.remove("oculto");
+    });
+
+    $("form-senha").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var erro = $("erro-senha"); erro.classList.remove("visivel");
+      $("ok-senha").classList.add("oculto");
+      var a = $("s-nova").value, b = $("s-conf").value;
+      if (a.length < 8) { erro.textContent = "Use pelo menos 8 caracteres."; erro.classList.add("visivel"); return; }
+      if (a !== b) { erro.textContent = "As senhas não são iguais."; erro.classList.add("visivel"); return; }
+      var r = await db.auth.updateUser({ password: a });
+      if (r.error) { erro.textContent = "Não foi possível salvar: " + r.error.message; erro.classList.add("visivel"); return; }
+      this.reset();
+      $("ok-senha").classList.remove("oculto");
+    });
+
+    // Volta do link de acesso: o Supabase lê o token do endereço e abre a sessão.
+    db.auth.onAuthStateChange(function (evento) {
+      if (evento === "SIGNED_IN") { history.replaceState(null, "", location.pathname); sessao(); }
     });
     $("sair").addEventListener("click", async function () { await db.auth.signOut(); mostrar("tela-login"); });
     $("filtros").addEventListener("click", function (e) {

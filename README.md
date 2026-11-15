@@ -42,7 +42,12 @@ Projeto `tdvjswuggnusoqosltxa` (us-east-1). Migrations em `supabase/migrations/`
 
 Sem `RESEND_API_KEY` o formulário funciona e grava, só não envia o e-mail (a página /obrigado já mostra o link do checklist).
 
-### Criar um admin do painel
+### Admins do painel
+
+Cadastrados: octavio.augusto.quintiliano@gmail.com e paulo.quintiliano@gmail.com. Entram por link no e-mail (não cria conta nova) ou por senha, que cada um cria em "Minha senha" dentro do painel.
+Para o link funcionar: Authentication > URL Configuration com Site URL e Redirect URLs do site (github.io/Holdings/admin/ e, depois, holdings.quintiliano.com.br/admin/), e SMTP próprio (Resend), porque o envio padrão do Supabase só manda para membros da equipe e no máximo 2 por hora.
+
+Para criar outro:
 
 1. Supabase > Authentication > Users > Add user (e-mail e senha, "auto confirm").
 2. SQL: `insert into public.admins (user_id, nome) select id, 'Nome' from auth.users where email = 'email@dominio';`
