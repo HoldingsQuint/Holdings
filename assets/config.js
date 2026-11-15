@@ -8,7 +8,7 @@ window.SITE = {
   oab: "OAB/DF 54.712",
   whatsapp: "5561982152262", // só números com DDI e DDD
   email: "paulo@quintiliano.adv.br",
-  escritorio: "",       // nome do escritório responsável pelos dados (controlador)
+  escritorio: "Quintiliano Advogados Associados",
   cnpj: "28.025.474/0001-07",
   cidade: "Brasília/DF",
 
