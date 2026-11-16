@@ -28,6 +28,9 @@ Projeto `tdvjswuggnusoqosltxa` (us-east-1). Migrations em `supabase/migrations/`
 - Funções (`verify_jwt: false`, aceitam só as origens de `ALLOWED_ORIGINS`):
   - `registrar-lead`: valida, grava, envia o checklist pelo Resend e põe o contato na lista.
   - `registrar-visita`: conta visita; com `{"ping": true}` só consulta o banco (usado pelo agendamento diário).
+  - `asaas-webhook`: recebe os avisos do Asaas (confere o cabeçalho `asaas-access-token`), grava em `pagamentos`, marca o contato com o mesmo e-mail como cliente, manda ao cliente o e-mail com o link de /sessao/confirmado/ e avisa o escritório. Cada e-mail sai uma vez só.
+  - `asaas-config`: só admin (botão "Retorno do Asaas" no painel); liga pela API o retorno automático do link de pagamento para /sessao/confirmado/ (a tela do Asaas não tem essa opção).
+- `pagamentos`: cobranças do Asaas (sem CPF nem o aviso bruto); só admin lê.
 - `.github/workflows/manter-ativo.yml`: ping diário para o projeto gratuito não pausar.
 
 ### Segredos das funções (Supabase > Edge Functions > Secrets), colocados pelo dono da conta
@@ -40,7 +43,14 @@ Projeto `tdvjswuggnusoqosltxa` (us-east-1). Migrations em `supabase/migrations/`
 | `SITE_URL` | `https://holdings.quintiliano.com.br` |
 | `RESEND_REPLY_TO` | opcional; padrão `paulo@quintiliano.adv.br` (respostas ao e-mail do checklist) |
 | `RESEND_BCC` | opcional; padrão `holdingsquintiliano@gmail.com` (cópia oculta de cada envio) |
+| `ASAAS_WEBHOOK_TOKEN` | token inventado pelo dono; o mesmo vai no webhook do Asaas |
+| `ASAAS_API_KEY` | chave de API de produção do Asaas (só aqui; nunca no código ou na conversa) |
+| `ASAAS_API_URL` | opcional; padrão `https://api.asaas.com/v3` (sandbox: `https://api-sandbox.asaas.com/v3`) |
+| `ASAAS_LINK_ID` | opcional; se definido, só cobranças desse link de pagamento são tratadas |
+| `AVISO_PAGAMENTO_PARA` | opcional; padrão `paulo@quintiliano.adv.br,holdingsquintiliano@gmail.com` |
 | `ALLOWED_ORIGINS` | opcional; padrão: domínio final, github.io e localhost:8080 |
+
+Webhook no Asaas (Integrações > Webhooks): URL `https://tdvjswuggnusoqosltxa.supabase.co/functions/v1/asaas-webhook`, token = `ASAAS_WEBHOOK_TOKEN`, fila sequencial, eventos de Cobrança (recebida, confirmada, estornada).
 
 Sem `RESEND_API_KEY` o formulário funciona e grava, só não envia o e-mail (a página /obrigado já mostra o link do checklist).
 

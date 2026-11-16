@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../assets/estilo.css?v=20261116b">
   <script src="../assets/config.js?v=20261116b"></script>
   <script src="supabase.js"></script>
-  <script src="admin.js?v=20261116b" defer></script>
+  <script src="admin.js?v=20261116c" defer></script>
 </head>
 <body>
 
@@ -85,6 +85,22 @@
           <tbody id="t-contatos"></tbody>
         </table>
       </div>
+      <div class="tabela-caixa">
+        <h3>Pagamentos da Sessão</h3>
+        <table>
+          <thead><tr><th>Data</th><th>Cliente</th><th>E-mail</th><th>Telefone</th><th class="num">Valor</th><th>Forma</th><th>Situação</th></tr></thead>
+          <tbody id="t-pagamentos"></tbody>
+        </table>
+      </div>
+      <details class="tabela-caixa" style="padding:0 18px 4px">
+        <summary style="cursor:pointer;font-weight:600;color:var(--marinho);padding:16px 0">Retorno do Asaas</summary>
+        <div style="max-width:520px;padding-bottom:12px">
+          <p class="nota">Faz o link de pagamento da Sessão levar o cliente para a página de confirmação depois de pagar. Basta fazer uma vez (e de novo se trocar o link).</p>
+          <div class="form-erro" id="erro-asaas" role="alert"></div>
+          <div class="destaque oculto" id="ok-asaas" role="status" style="margin-bottom:14px"></div>
+          <button class="botao" type="button" id="b-asaas">Ligar o retorno no link</button>
+        </div>
+      </details>
       <details class="tabela-caixa" style="padding:0 18px 4px">
         <summary style="cursor:pointer;font-weight:600;color:var(--marinho);padding:16px 0">Minha senha</summary>
         <form id="form-senha" style="max-width:380px;padding-bottom:12px">

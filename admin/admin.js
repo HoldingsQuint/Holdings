@@ -50,6 +50,8 @@
     var desde = inicio();
     var rv = await db.from("visitas").select("pagina, origem, dispositivo").gte("criado_em", desde).limit(20000);
     var rl = await db.from("leads").select("id, criado_em, nome, email, whatsapp, origem, campanha, email_enviado, status").gte("criado_em", desde).order("criado_em", { ascending: false }).limit(5000);
+    var rp = await db.from("pagamentos").select("criado_em, cliente_nome, cliente_email, cliente_telefone, valor, forma, status").gte("criado_em", desde).order("criado_em", { ascending: false }).limit(1000);
+    pagamentos(rp.data || []);
     var visitas = rv.data || [];
     contatos = rl.data || [];
 
@@ -113,6 +115,46 @@
       tdS.appendChild(sel); tr.appendChild(tdS);
       tbc.appendChild(tr);
     });
+  }
+
+  var STATUS_PAG = { RECEIVED: "Pago", CONFIRMED: "Pago", RECEIVED_IN_CASH: "Pago", PENDING: "Aguardando", OVERDUE: "Vencido", REFUNDED: "Estornado", REFUND_REQUESTED: "Estorno pedido", CHARGEBACK_REQUESTED: "Contestação", DELETED: "Removido" };
+  function pagamentos(lista) {
+    var t = $("t-pagamentos"); t.innerHTML = "";
+    if (!lista.length) { var tr = el("tr"); var td = el("td", "Nenhum pagamento no período.", "vazio"); td.colSpan = 7; tr.appendChild(td); t.appendChild(tr); return; }
+    lista.forEach(function (p) {
+      var tr = el("tr");
+      tr.appendChild(el("td", data(p.criado_em)));
+      tr.appendChild(el("td", p.cliente_nome || "–"));
+      tr.appendChild(el("td", p.cliente_email || "–"));
+      tr.appendChild(el("td", p.cliente_telefone || "–"));
+      tr.appendChild(el("td", p.valor != null ? Number(p.valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "–", "num"));
+      tr.appendChild(el("td", { PIX: "Pix", CREDIT_CARD: "Cartão", BOLETO: "Boleto" }[p.forma] || p.forma || "–"));
+      tr.appendChild(el("td", STATUS_PAG[p.status] || p.status));
+      t.appendChild(tr);
+    });
+  }
+
+  async function ligarRetorno() {
+    var erro = $("erro-asaas"), okk = $("ok-asaas"), b = $("b-asaas");
+    erro.classList.remove("visivel"); okk.classList.add("oculto");
+    var codigo = String(S.linkPagamento || "").split("?")[0].replace(/\/$/, "").split("/").pop();
+    var s = (await db.auth.getSession()).data.session;
+    if (!s || !codigo) { erro.textContent = "Entre de novo e confira o link de pagamento no config."; erro.classList.add("visivel"); return; }
+    b.disabled = true;
+    try {
+      var r = await fetch(S.supabaseUrl + "/functions/v1/asaas-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: S.supabaseKey, Authorization: "Bearer " + s.access_token },
+        body: JSON.stringify({ codigo: codigo }),
+      });
+      var j = await r.json().catch(function () { return {}; });
+      if (!r.ok) throw new Error(j.erro || ("erro " + r.status));
+      okk.textContent = "Pronto. Depois de pagar, o cliente vai para " + j.retorno;
+      okk.classList.remove("oculto");
+    } catch (e) {
+      erro.textContent = "Não deu certo: " + e.message;
+      erro.classList.add("visivel");
+    } finally { b.disabled = false; }
   }
 
   function alertaErro() { console.error("Não foi possível salvar a situação."); }
@@ -190,6 +232,7 @@
       carregar();
     });
     $("exportar").addEventListener("click", exportar);
+    $("b-asaas").addEventListener("click", ligarRetorno);
     sessao();
   });
 })();
