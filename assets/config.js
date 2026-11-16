@@ -16,7 +16,7 @@ window.SITE = {
   precoSessao: "R$ 2.500,00", // conferir com as regras de publicidade da OAB
   duracaoSessao: "2 horas",
   linkPagamento: "https://www.asaas.com/000/c/7jjp4ws0u3l2eyqk", // link de pagamento do Asaas
-  linkAgenda: "",       // página de agendamento (ex.: agenda do Google com horários abertos)
+  linkAgenda: "https://calendar.app.google/jE4iY72uo7jBEgcq5",       // página de agendamento (ex.: agenda do Google com horários abertos)
 
   metaPixel: "1614948597068173", // pixel da Meta
 };
