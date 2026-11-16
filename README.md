@@ -38,6 +38,8 @@ Projeto `tdvjswuggnusoqosltxa` (us-east-1). Migrations em `supabase/migrations/`
 | `RESEND_FROM` | `Holdings Quintiliano <contato@holdings.quintiliano.com.br>` |
 | `RESEND_AUDIENCE_ID` | id da lista de contatos no Resend (opcional) |
 | `SITE_URL` | `https://holdings.quintiliano.com.br` |
+| `RESEND_REPLY_TO` | opcional; padrão `paulo@quintiliano.adv.br` (respostas ao e-mail do checklist) |
+| `RESEND_BCC` | opcional; padrão `holdingsquintiliano@gmail.com` (cópia oculta de cada envio) |
 | `ALLOWED_ORIGINS` | opcional; padrão: domínio final, github.io e localhost:8080 |
 
 Sem `RESEND_API_KEY` o formulário funciona e grava, só não envia o e-mail (a página /obrigado já mostra o link do checklist).

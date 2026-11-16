@@ -37,7 +37,16 @@ export async function enviarChecklist(nome: string, email: string): Promise<bool
   const r = await fetch(`${API}/emails`, {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: de, to: [email], subject: "Seu checklist: sua família precisa de uma holding?", html, text: texto }),
+    body: JSON.stringify({
+      from: de,
+      to: [email],
+      // Respostas vão para o Paulo; cópia oculta de cada envio para a caixa das holdings.
+      reply_to: (Deno.env.get("RESEND_REPLY_TO") ?? "paulo@quintiliano.adv.br").split(",").map((x) => x.trim()).filter(Boolean),
+      bcc: (Deno.env.get("RESEND_BCC") ?? "holdingsquintiliano@gmail.com").split(",").map((x) => x.trim()).filter(Boolean),
+      subject: "Seu checklist: sua família precisa de uma holding?",
+      html,
+      text: texto,
+    }),
   });
   if (!r.ok) console.error("resend emails", r.status, await r.text());
   return r.ok;
