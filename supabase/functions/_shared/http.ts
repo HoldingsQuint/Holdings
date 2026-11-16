@@ -1,6 +1,8 @@
 // CORS e respostas JSON. Origens aceitas vêm de ALLOWED_ORIGINS (separadas por vírgula).
 const PADRAO = [
   "https://holdings.quintiliano.com.br",
+  // Temporário: enquanto o GitHub não libera o HTTPS do domínio. Remover depois do "Enforce HTTPS".
+  "http://holdings.quintiliano.com.br",
   "https://holdingsquint.github.io",
   "http://localhost:8080",
 ];
