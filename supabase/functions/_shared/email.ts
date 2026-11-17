@@ -24,7 +24,7 @@ export async function enviarChecklist(nome: string, email: string): Promise<bool
   <tr><td style="background:#0f2a4a;padding:20px 28px;color:#ffffff;font-size:18px;font-weight:bold">Holdings Quintiliano</td></tr>
   <tr><td style="padding:28px">
   <p style="font-size:16px;margin:0 0 16px">Olá, ${primeiro}.</p>
-  <p style="font-size:16px;line-height:1.5;margin:0 0 16px">Aqui está o seu checklist <strong>"Sua família precisa de uma holding?"</strong>. São 12 perguntas rápidas para ver se vale a pena estudar o assunto com calma.</p>
+  <p style="font-size:16px;line-height:1.5;margin:0 0 16px">Aqui está o seu checklist <strong>"Sua família precisa de uma holding?"</strong>. São 15 perguntas rápidas para ver se vale a pena estudar o assunto com calma.</p>
   <p style="margin:24px 0"><a href="${link}" style="background:#1f5fae;color:#ffffff;text-decoration:none;padding:14px 22px;border-radius:6px;font-weight:bold;display:inline-block">Abrir o checklist</a></p>
   <p style="font-size:15px;line-height:1.5;margin:0 0 16px">Se, no fim, a resposta for "vale olhar com atenção", a <a href="${sessao}" style="color:#1f5fae">Sessão de Viabilidade</a> é uma conversa individual para analisar o seu caso.</p>
   <p style="font-size:13px;line-height:1.5;color:#5b6b80;margin:24px 0 0">Este material é informativo e não substitui a análise de um advogado sobre o seu caso.</p>
@@ -97,10 +97,10 @@ export async function confirmarPagamento(nome: string, email: string): Promise<b
   const primeiro = (nome || "").split(" ")[0];
   const html = moldura(`
   <p style="font-size:16px;margin:0 0 16px">Olá${primeiro ? ", " + escapar(primeiro) : ""}.</p>
-  <p style="font-size:16px;line-height:1.5;margin:0 0 16px">Recebemos o pagamento da sua <strong>Sessão de Viabilidade</strong>. O próximo passo é marcar o dia e o horário da entrevista, que dura cerca de 2 horas.</p>
+  <p style="font-size:16px;line-height:1.5;margin:0 0 16px">Recebemos o pagamento da sua <strong>Sessão de Viabilidade</strong>. O próximo passo é marcar o dia e o horário da entrevista, que dura cerca de 2 horas. Na mesma página, você pode preencher a ficha pré-sessão com as informações do patrimônio e da família, para a conversa render mais.</p>
   <p style="margin:24px 0"><a href="${link}" style="background:#1f5fae;color:#ffffff;text-decoration:none;padding:14px 22px;border-radius:6px;font-weight:bold;display:inline-block">Marcar o horário</a></p>
   <p style="font-size:15px;line-height:1.5;margin:0 0 16px">Depois da entrevista, você envia os documentos pedidos e recebe o Relatório Técnico de Viabilidade. Se tiver qualquer dúvida, é só responder este e-mail.</p>`);
-  const texto = `Olá${primeiro ? ", " + primeiro : ""}.\n\nRecebemos o pagamento da sua Sessão de Viabilidade. Marque o dia e o horário da entrevista (cerca de 2 horas): ${link}\n\nDepois da entrevista, você envia os documentos pedidos e recebe o Relatório Técnico de Viabilidade. Dúvidas: responda este e-mail.`;
+  const texto = `Olá${primeiro ? ", " + primeiro : ""}.\n\nRecebemos o pagamento da sua Sessão de Viabilidade. Marque o dia e o horário da entrevista (cerca de 2 horas) e, se quiser, preencha a ficha pré-sessão: ${link}\n\nDepois da entrevista, você envia os documentos pedidos e recebe o Relatório Técnico de Viabilidade. Dúvidas: responda este e-mail.`;
   return enviar({
     to: [email],
     reply_to: listaEnv("RESEND_REPLY_TO", "paulo@quintiliano.adv.br"),
@@ -129,5 +129,19 @@ export async function avisarEscritorio(p: { cliente_nome?: string | null; client
     subject: `Sessão paga: ${p.cliente_nome ?? "novo cliente"}`,
     html,
     text: linhas.map(([a, b]) => `${a}: ${b}`).join("\n"),
+  });
+}
+
+// Para o escritório: chegou uma ficha pré-sessão (sem os dados do patrimônio no e-mail).
+export async function avisarFicha(nome: string, email: string, whatsapp: string): Promise<boolean> {
+  const site = Deno.env.get("SITE_URL") ?? "https://holdings.quintiliano.com.br";
+  const html = moldura(`<p style="font-size:16px;margin:0 0 16px"><strong>Nova ficha pré-sessão.</strong></p>
+  <p style="font-size:15px;line-height:1.5;margin:0 0 16px">${escapar(nome)} (${escapar(email)}, WhatsApp ${escapar(whatsapp)}) enviou as informações do patrimônio e da família para a Sessão de Viabilidade.</p>
+  <p style="margin:24px 0"><a href="${site}/admin/" style="background:#1f5fae;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:6px;font-weight:bold;display:inline-block">Ver no painel</a></p>`);
+  return enviar({
+    to: listaEnv("AVISO_PAGAMENTO_PARA", "paulo@quintiliano.adv.br,holdingsquintiliano@gmail.com"),
+    subject: `Ficha pré-sessão: ${nome}`,
+    html,
+    text: `Nova ficha pré-sessão de ${nome} (${email}, WhatsApp ${whatsapp}). Veja no painel: ${site}/admin/`,
   });
 }

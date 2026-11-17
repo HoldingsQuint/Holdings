@@ -9,7 +9,7 @@ HTML, CSS e JS puros, sem build. Banco e funções no Supabase; e-mails pelo Res
 |---|---|
 | `/` | Landing com o formulário do checklist |
 | `/obrigado/` | Depois do formulário (evento `Lead` do pixel). Não indexada |
-| `/checklist/` | O checklist interativo (12 perguntas, nada é gravado). Não indexada |
+| `/checklist/` | O checklist interativo (15 perguntas, nada é gravado). Não indexada |
 | `/sessao/` | Página da Sessão de Viabilidade, com botão de pagamento |
 | `/sessao/confirmado/` | Depois do pagamento: link da agenda e o que separar. Não indexada |
 | `/privacidade/` | Política de privacidade (LGPD) |
@@ -29,7 +29,9 @@ Projeto `tdvjswuggnusoqosltxa` (us-east-1). Migrations em `supabase/migrations/`
   - `registrar-lead`: valida, grava, envia o checklist pelo Resend e põe o contato na lista.
   - `registrar-visita`: conta visita; com `{"ping": true}` só consulta o banco (usado pelo agendamento diário).
   - `asaas-webhook`: recebe os avisos do Asaas (confere o cabeçalho `asaas-access-token`), grava em `pagamentos`, marca o contato com o mesmo e-mail como cliente, manda ao cliente o e-mail com o link de /sessao/confirmado/ e avisa o escritório. Cada e-mail sai uma vez só.
+  - `registrar-ficha`: recebe a ficha pré-sessão de /sessao/confirmado/ (faixas de valor, sem documentos), grava em `fichas_sessao` e avisa o escritório só com nome e contato.
   - `asaas-config`: só admin (botão "Retorno do Asaas" no painel); liga pela API o retorno automático do link de pagamento para /sessao/confirmado/ (a tela do Asaas não tem essa opção).
+- `fichas_sessao`: ficha pré-sessão (família, patrimônio em faixas, objetivos); só admin lê, no painel.
 - `pagamentos`: cobranças do Asaas (sem CPF nem o aviso bruto); só admin lê.
 - `.github/workflows/manter-ativo.yml`: ping diário para o projeto gratuito não pausar.
 

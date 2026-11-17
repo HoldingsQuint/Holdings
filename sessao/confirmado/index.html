@@ -7,7 +7,7 @@
   <title>Sessão confirmada | Holdings Quintiliano</title>
   <link rel="icon" href="../../assets/logo.png">
   <link rel="stylesheet" href="../../assets/fontes.css">
-  <link rel="stylesheet" href="../../assets/estilo.css?v=20261116b">
+  <link rel="stylesheet" href="../../assets/estilo.css?v=20261117a">
   <script src="../../assets/config.js?v=20261116d"></script>
   <script src="../../assets/site.js?v=20261116b" defer></script>
 </head>
@@ -32,21 +32,59 @@
 
       <hr style="border:0;border-top:1px solid #e6ebf1;margin:28px 0">
 
-      <h2 style="font-size:1.35rem">Para aproveitar melhor a conversa</h2>
-      <p>Separe o que tiver à mão. Nada disso é obrigatório, mas quanto mais informação, mais precisa fica a análise.</p>
-      <ul class="lista-check" style="margin-bottom:20px">
-        <li>Lista dos bens: imóveis, empresas, investimentos e veículos</li>
-        <li>Matrículas dos imóveis, se tiver</li>
-        <li>Contrato social das empresas em que é sócio</li>
-        <li>Regime de casamento ou união estável</li>
-        <li>Quem são os herdeiros e as idades</li>
-        <li>Suas principais preocupações e objetivos</li>
-      </ul>
-      <div class="destaque">Tudo o que for conversado fica sob sigilo profissional do advogado.</div>
+      <h2 style="font-size:1.35rem" id="ficha">Ficha pré-sessão</h2>
+      <p>Opcional, mas ajuda: com estas informações o advogado chega à entrevista já conhecendo o seu caso, e a conversa rende mais. Use valores aproximados; nenhum documento é pedido aqui.</p>
+      <form id="form-ficha" novalidate>
+        <div class="form-erro" role="alert" id="erro-ficha">Não conseguimos enviar agora. Confira os campos e tente de novo.</div>
+        <p class="bloco-titulo">Seus dados</p>
+        <div class="campo"><label for="f-nome">Nome</label><input id="f-nome" name="nome" autocomplete="name" required><div class="msg">Informe seu nome.</div></div>
+        <div class="campo"><label for="f-email">E-mail usado no pagamento</label><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required><div class="msg">Confira o e-mail.</div></div>
+        <div class="campo"><label for="f-whatsapp">WhatsApp</label><input id="f-whatsapp" name="whatsapp" type="tel" autocomplete="tel-national" inputmode="tel" placeholder="(61) 99999-9999" required><div class="msg">Informe o WhatsApp com DDD.</div></div>
+        <div class="isca" aria-hidden="true"><label for="f-site">Site</label><input id="f-site" name="empresa_site" tabindex="-1" autocomplete="off"></div>
+
+        <p class="bloco-titulo">Família</p>
+          <div class="campo"><label for="f-estado_civil">Estado civil</label><select id="f-estado_civil" name="estado_civil"><option value="">Selecione</option><option value="solteiro">Solteiro(a)</option><option value="casado">Casado(a)</option><option value="uniao_estavel">União estável</option><option value="divorciado">Divorciado(a)</option><option value="viuvo">Viúvo(a)</option></select></div>
+          <div class="campo"><label for="f-regime_bens">Regime de bens (se casado ou em união estável)</label><select id="f-regime_bens" name="regime_bens"><option value="">Selecione</option><option value="comunhao_parcial">Comunhão parcial</option><option value="comunhao_universal">Comunhão universal</option><option value="separacao_total">Separação total</option><option value="participacao_final">Participação final nos aquestos</option><option value="nao_sei">Não sei</option></select></div>
+        <div class="campo"><label for="f-herdeiros">Quantos herdeiros (filhos, cônjuge, outros)?</label><input id="f-herdeiros" name="herdeiros" type="number" min="0" max="50" inputmode="numeric"></div>
+          <div class="campo"><label>Algum herdeiro é menor de idade?</label><div class="opcoes"><label><input type="radio" name="herdeiro_menor" value="sim"><span>Sim</span></label><label><input type="radio" name="herdeiro_menor" value="nao"><span>Não</span></label></div></div>
+          <div class="campo"><label>Há filhos de relacionamentos diferentes?</label><div class="opcoes"><label><input type="radio" name="filhos_relacoes_diferentes" value="sim"><span>Sim</span></label><label><input type="radio" name="filhos_relacoes_diferentes" value="nao"><span>Não</span></label></div></div>
+
+        <p class="bloco-titulo">Patrimônio</p>
+          <div class="campo"><label for="f-imoveis">Quantos imóveis (incluindo a casa onde mora)?</label><select id="f-imoveis" name="imoveis"><option value="">Selecione</option><option value="0">Nenhum</option><option value="1">1</option><option value="2-5">2 a 5</option><option value="6-10">6 a 10</option><option value="10+">Mais de 10</option></select></div>
+          <div class="campo"><label for="f-valor_imoveis">Valor aproximado dos imóveis, somados</label><select id="f-valor_imoveis" name="valor_imoveis"><option value="">Selecione</option><option value="ate_1mi">Até R$ 1 milhão</option><option value="1_3mi">R$ 1 a 3 milhões</option><option value="3_10mi">R$ 3 a 10 milhões</option><option value="10mi+">Mais de R$ 10 milhões</option><option value="nao_informar">Prefiro não informar</option></select></div>
+          <div class="campo"><label>Recebe renda de aluguéis?</label><div class="opcoes"><label><input type="radio" name="aluguel" value="sim"><span>Sim</span></label><label><input type="radio" name="aluguel" value="nao"><span>Não</span></label></div></div>
+          <div class="campo"><label>Tem propriedade rural ou atividade no agronegócio?</label><div class="opcoes"><label><input type="radio" name="rural" value="sim"><span>Sim</span></label><label><input type="radio" name="rural" value="nao"><span>Não</span></label></div></div>
+          <div class="campo"><label>Tem empresa ou participação em sociedade?</label><div class="opcoes"><label><input type="radio" name="empresa" value="sim"><span>Sim</span></label><label><input type="radio" name="empresa" value="nao"><span>Não</span></label></div></div>
+        <div class="campo"><label for="f-empresa_descricao">Se tiver empresa: ramo e sua participação (opcional)</label><input id="f-empresa_descricao" name="empresa_descricao" maxlength="500" placeholder="Ex.: comércio, 50% das cotas"></div>
+          <div class="campo"><label for="f-investimentos">Investimentos financeiros, somados</label><select id="f-investimentos" name="investimentos"><option value="">Selecione</option><option value="nenhum">Nenhum relevante</option><option value="ate_500mil">Até R$ 500 mil</option><option value="500mil_2mi">R$ 500 mil a 2 milhões</option><option value="2mi+">Mais de R$ 2 milhões</option><option value="nao_informar">Prefiro não informar</option></select></div>
+
+        <p class="bloco-titulo">Objetivos</p>
+        <div class="campo objetivos">
+          <label><input type="checkbox" name="objetivos" value="sucessao"> Planejar a sucessão</label>
+          <label><input type="checkbox" name="objetivos" value="impostos"> Reduzir impostos dentro da lei</label>
+          <label><input type="checkbox" name="objetivos" value="protecao"> Proteger e preservar o patrimônio</label>
+          <label><input type="checkbox" name="objetivos" value="inventario"> Evitar inventário longo e caro</label>
+          <label><input type="checkbox" name="objetivos" value="gestao"> Organizar a gestão dos bens</label>
+          <label><input type="checkbox" name="objetivos" value="empresa"> Sucessão da empresa da família</label>
+          <label><input type="checkbox" name="objetivos" value="outro"> Outro (conte abaixo)</label>
+        </div>
+        <div class="campo"><label for="f-observacoes">Algo mais que o advogado deve saber? (opcional)</label><textarea id="f-observacoes" name="observacoes" rows="4" maxlength="3000"></textarea></div>
+
+        <label class="consentimento">
+          <input type="checkbox" name="consentimento">
+          <span>Autorizo o uso destas informações para preparar a minha Sessão de Viabilidade, sob sigilo profissional, conforme a <a href="../../privacidade/">política de privacidade</a>.</span>
+        </label>
+        <button class="botao largo" type="submit">Enviar ficha</button>
+      </form>
+      <div class="destaque oculto" id="ok-ficha" role="status">Ficha recebida. Obrigado! O advogado vai ler antes da entrevista. Se lembrar de algo depois, é só contar na conversa.</div>
+
+      <p style="margin-top:24px"><strong>Para a entrevista, se tiver à mão:</strong> matrículas dos imóveis, contrato social das empresas e documento do regime de casamento ou união estável. Nada disso é obrigatório agora.</p>
+      <div class="destaque" style="margin-top:20px">Tudo o que for conversado fica sob sigilo profissional do advogado.</div>
       <p style="margin-top:20px">Alguma dúvida ou problema com o pagamento? <a data-zap="Olá! Confirmei a Sessão de Viabilidade e preciso de ajuda.">Fale pelo WhatsApp</a>.</p>
     </div>
   </div>
 </main>
+<script src="ficha.js?v=20261117a" defer></script>
 
 <footer class="rodape">
   <div class="container">

@@ -53,6 +53,8 @@
     var rl = await db.from("leads").select("id, criado_em, nome, email, whatsapp, origem, campanha, email_enviado, status").gte("criado_em", desde).order("criado_em", { ascending: false }).limit(5000);
     var rp = await db.from("pagamentos").select("criado_em, cliente_nome, cliente_email, cliente_telefone, valor, forma, status").gte("criado_em", desde).order("criado_em", { ascending: false }).limit(1000);
     pagamentos(rp.data || []);
+    var rf = await db.from("fichas_sessao").select("*").gte("criado_em", desde).order("criado_em", { ascending: false }).limit(500);
+    fichas(rf.data || [], rp.data || []);
     var visitas = rv.data || [];
     contatos = rl.data || [];
 
@@ -132,6 +134,48 @@
       tr.appendChild(el("td", { PIX: "Pix", CREDIT_CARD: "Cartão", BOLETO: "Boleto" }[p.forma] || p.forma || "–"));
       tr.appendChild(el("td", STATUS_PAG[p.status] || p.status));
       t.appendChild(tr);
+    });
+  }
+
+  var ROTULOS = {
+    estado_civil: { solteiro: "Solteiro(a)", casado: "Casado(a)", uniao_estavel: "União estável", divorciado: "Divorciado(a)", viuvo: "Viúvo(a)" },
+    regime_bens: { comunhao_parcial: "Comunhão parcial", comunhao_universal: "Comunhão universal", separacao_total: "Separação total", participacao_final: "Participação final nos aquestos", nao_sei: "Não sabe" },
+    imoveis: { "0": "Nenhum", "1": "1", "2-5": "2 a 5", "6-10": "6 a 10", "10+": "Mais de 10" },
+    valor_imoveis: { ate_1mi: "Até R$ 1 mi", "1_3mi": "R$ 1 a 3 mi", "3_10mi": "R$ 3 a 10 mi", "10mi+": "Mais de R$ 10 mi", nao_informar: "Não informou" },
+    investimentos: { nenhum: "Nenhum relevante", ate_500mil: "Até R$ 500 mil", "500mil_2mi": "R$ 500 mil a 2 mi", "2mi+": "Mais de R$ 2 mi", nao_informar: "Não informou" },
+    objetivos: { sucessao: "Sucessão", impostos: "Impostos", protecao: "Proteção do patrimônio", inventario: "Evitar inventário", gestao: "Gestão dos bens", empresa: "Sucessão da empresa", outro: "Outro" },
+  };
+  function sn(v) { return v === true ? "Sim" : v === false ? "Não" : "–"; }
+  function fichas(lista, pags) {
+    var box = $("fichas"); box.innerHTML = "";
+    if (!lista.length) { box.appendChild(el("p", "Nenhuma ficha no período.", "nota")); return; }
+    var pagos = {};
+    pags.forEach(function (p) { if (p.cliente_email) pagos[p.cliente_email.toLowerCase()] = true; });
+    lista.forEach(function (f) {
+      var d = el("details"); d.style.borderTop = "1px solid #e6ebf1"; d.style.padding = "10px 0";
+      var sm = el("summary"); sm.style.cursor = "pointer";
+      sm.appendChild(el("strong", f.nome));
+      sm.appendChild(document.createTextNode(" · " + data(f.criado_em) + " · " + (pagos[f.email.toLowerCase()] ? "pagou" : "pagamento não encontrado")));
+      d.appendChild(sm);
+      var linhas = [
+        ["E-mail", f.email], ["WhatsApp", zapFmt(f.whatsapp)],
+        ["Estado civil", (ROTULOS.estado_civil[f.estado_civil] || "–") + (f.regime_bens ? " · " + (ROTULOS.regime_bens[f.regime_bens] || f.regime_bens) : "")],
+        ["Herdeiros", (f.herdeiros != null ? f.herdeiros : "–") + " · menor de idade: " + sn(f.herdeiro_menor) + " · filhos de relações diferentes: " + sn(f.filhos_relacoes_diferentes)],
+        ["Imóveis", (ROTULOS.imoveis[f.imoveis] || "–") + " · " + (ROTULOS.valor_imoveis[f.valor_imoveis] || "valor –") + " · aluguel: " + sn(f.aluguel)],
+        ["Rural / agro", sn(f.rural)],
+        ["Empresa", sn(f.empresa) + (f.empresa_descricao ? " · " + f.empresa_descricao : "")],
+        ["Investimentos", ROTULOS.investimentos[f.investimentos] || "–"],
+        ["Objetivos", (f.objetivos || []).map(function (o) { return ROTULOS.objetivos[o] || o; }).join(", ") || "–"],
+        ["Observações", f.observacoes || "–"],
+      ];
+      var t = el("table"); t.style.marginTop = "8px";
+      linhas.forEach(function (l) {
+        var tr = el("tr"); var a = el("td", l[0]); a.style.color = "var(--texto-suave)"; a.style.width = "140px";
+        var b = el("td", String(l[1])); b.style.whiteSpace = "pre-wrap";
+        tr.appendChild(a); tr.appendChild(b); t.appendChild(tr);
+      });
+      d.appendChild(t);
+      box.appendChild(d);
     });
   }
 
