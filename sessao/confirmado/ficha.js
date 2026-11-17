@@ -49,6 +49,12 @@
         body: JSON.stringify({ dados: dados }),
       });
       if (!r.ok) throw new Error(r.status);
+      // Aviso ao escritório (só o e-mail vai junto; a função confere a ficha no banco).
+      fetch(S.supabaseUrl + "/functions/v1/avisar-ficha", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: S.supabaseKey },
+        body: JSON.stringify({ email: email }),
+      }).catch(function () {});
       form.classList.add("oculto");
       var okBox = document.getElementById("ok-ficha");
       okBox.classList.remove("oculto");
