@@ -90,12 +90,18 @@ p { margin: 0 0 1em; }
 /* Formulário */
 .campo { margin-bottom: 14px; }
 .campo label { display: block; font-weight: 600; font-size: .92rem; margin-bottom: 6px; color: var(--marinho); }
-.campo input {
+.campo input, .campo select, .campo textarea {
   width: 100%; padding: 13px 14px; font: 400 1rem var(--f-texto); color: var(--texto);
   border: 1.5px solid #cfd6df; border-radius: 8px; background: var(--branco);
 }
-.campo input:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(22, 97, 199, .15); }
+.campo input:focus, .campo select:focus, .campo textarea:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(22, 97, 199, .15); }
 .campo.invalido input { border-color: var(--erro); }
+.campo textarea { resize: vertical; }
+.campo .opcoes input { width: auto; }
+#form-ficha .bloco-titulo { margin: 22px 0 10px; }
+.objetivos { display: grid; gap: 8px; }
+.objetivos label { display: flex; gap: 10px; align-items: center; font-weight: 400; color: var(--texto); margin: 0; cursor: pointer; }
+.objetivos input { width: 18px; height: 18px; accent-color: var(--azul); }
 .campo .msg { display: none; color: var(--erro); font-size: .85rem; margin-top: 4px; }
 .campo.invalido .msg { display: block; }
 .consentimento { display: flex; gap: 10px; align-items: flex-start; font-size: .85rem; color: var(--texto-suave); margin: 4px 0 18px; }
