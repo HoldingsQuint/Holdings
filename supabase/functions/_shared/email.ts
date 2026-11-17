@@ -132,16 +132,3 @@ export async function avisarEscritorio(p: { cliente_nome?: string | null; client
   });
 }
 
-// Para o escritório: chegou uma ficha pré-sessão (sem os dados do patrimônio no e-mail).
-export async function avisarFicha(nome: string, email: string, whatsapp: string): Promise<boolean> {
-  const site = Deno.env.get("SITE_URL") ?? "https://holdings.quintiliano.com.br";
-  const html = moldura(`<p style="font-size:16px;margin:0 0 16px"><strong>Nova ficha pré-sessão.</strong></p>
-  <p style="font-size:15px;line-height:1.5;margin:0 0 16px">${escapar(nome)} (${escapar(email)}, WhatsApp ${escapar(whatsapp)}) enviou as informações do patrimônio e da família para a Sessão de Viabilidade.</p>
-  <p style="margin:24px 0"><a href="${site}/admin/" style="background:#1f5fae;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:6px;font-weight:bold;display:inline-block">Ver no painel</a></p>`);
-  return enviar({
-    to: listaEnv("AVISO_PAGAMENTO_PARA", "paulo@quintiliano.adv.br,holdingsquintiliano@gmail.com"),
-    subject: `Ficha pré-sessão: ${nome}`,
-    html,
-    text: `Nova ficha pré-sessão de ${nome} (${email}, WhatsApp ${whatsapp}). Veja no painel: ${site}/admin/`,
-  });
-}

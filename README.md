@@ -29,9 +29,8 @@ Projeto `tdvjswuggnusoqosltxa` (us-east-1). Migrations em `supabase/migrations/`
   - `registrar-lead`: valida, grava, envia o checklist pelo Resend e põe o contato na lista.
   - `registrar-visita`: conta visita; com `{"ping": true}` só consulta o banco (usado pelo agendamento diário).
   - `asaas-webhook`: recebe os avisos do Asaas (confere o cabeçalho `asaas-access-token`), grava em `pagamentos`, marca o contato com o mesmo e-mail como cliente, manda ao cliente o e-mail com o link de /sessao/confirmado/ e avisa o escritório. Cada e-mail sai uma vez só.
-  - `registrar-ficha`: recebe a ficha pré-sessão de /sessao/confirmado/ (faixas de valor, sem documentos), grava em `fichas_sessao` e avisa o escritório só com nome e contato.
   - `asaas-config`: só admin (botão "Retorno do Asaas" no painel); liga pela API o retorno automático do link de pagamento para /sessao/confirmado/ (a tela do Asaas não tem essa opção).
-- `fichas_sessao`: ficha pré-sessão (família, patrimônio em faixas, objetivos); só admin lê, no painel.
+- `fichas_sessao`: ficha pré-sessão (família, patrimônio em faixas, objetivos). O site grava pela função do banco `enviar_ficha` (RPC, valida campos e origem, não devolve dados); só admin lê, no painel.
 - `pagamentos`: cobranças do Asaas (sem CPF nem o aviso bruto); só admin lê.
 - `.github/workflows/manter-ativo.yml`: ping diário para o projeto gratuito não pausar.
 

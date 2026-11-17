@@ -1,4 +1,4 @@
-// Ficha pré-sessão: envia para a função registrar-ficha. Não passa pelo pixel.
+// Ficha pré-sessão: grava pela função do banco enviar_ficha. Não passa pelo pixel.
 (function () {
   var form = document.getElementById("form-ficha");
   if (!form) return;
@@ -42,10 +42,11 @@
     var b = form.querySelector('button[type="submit"]');
     b.disabled = true; b.textContent = "Enviando...";
     try {
-      var r = await fetch(S.supabaseUrl + "/functions/v1/registrar-ficha", {
+      // Grava pela função do banco (enviar_ficha), que valida tudo e não devolve dados.
+      var r = await fetch(S.supabaseUrl + "/rest/v1/rpc/enviar_ficha", {
         method: "POST",
         headers: { "Content-Type": "application/json", apikey: S.supabaseKey },
-        body: JSON.stringify(dados),
+        body: JSON.stringify({ dados: dados }),
       });
       if (!r.ok) throw new Error(r.status);
       form.classList.add("oculto");
