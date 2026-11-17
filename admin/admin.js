@@ -43,6 +43,7 @@
     var a = await db.from("admins").select("user_id").eq("user_id", s.user.id).maybeSingle();
     if (!a.data) return mostrar("tela-negado");
     mostrar("tela-painel");
+    agenda("AGENDA");
     carregar();
   }
 
@@ -132,6 +133,14 @@
       tr.appendChild(el("td", STATUS_PAG[p.status] || p.status));
       t.appendChild(tr);
     });
+  }
+
+  // Agenda do Google onde caem as reservas da página de agendamento.
+  var AGENDA = "holdingsquintiliano@gmail.com";
+  function agenda(modo) {
+    var src = "https://calendar.google.com/calendar/embed?src=" + encodeURIComponent(AGENDA) +
+      "&ctz=America%2FSao_Paulo&hl=pt_BR&mode=" + modo + "&showTitle=0&showPrint=0&showCalendars=0&showTz=0";
+    $("agenda").src = src;
   }
 
   async function ligarRetorno() {
@@ -233,6 +242,11 @@
     });
     $("exportar").addEventListener("click", exportar);
     $("b-asaas").addEventListener("click", ligarRetorno);
+    $("modo-agenda").addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      this.querySelectorAll("button").forEach(function (x) { x.classList.toggle("ativo", x === b); });
+      agenda(b.getAttribute("data-modo"));
+    });
     sessao();
   });
 })();
