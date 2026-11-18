@@ -7,7 +7,7 @@
   <title>Checklist: sua família precisa de uma holding? | Holdings Quintiliano</title>
   <link rel="icon" href="../assets/logo.png">
   <link rel="stylesheet" href="../assets/fontes.css">
-  <link rel="stylesheet" href="../assets/estilo.css?v=20261118a">
+  <link rel="stylesheet" href="../assets/estilo.css?v=20261118b">
   <script src="../assets/config.js?v=20261117c"></script>
   <script src="../assets/site.js?v=20261117c" defer></script>
 </head>
@@ -104,6 +104,12 @@
         </p>
       </form>
 
+      <div class="calculando" id="calculando" aria-live="polite" hidden>
+        <div class="calc-roda" aria-hidden="true"></div>
+        <p class="calc-titulo">Calculando o seu resultado</p>
+        <p class="calc-etapa" id="calc-etapa">Analisando o patrimônio</p>
+        <div class="calc-barra" aria-hidden="true"><span id="calc-progresso"></span></div>
+      </div>
       <div class="resultado" id="resultado" aria-live="polite">
         <div class="destaque">
           <div class="placar"><span id="pontos">0</span> de 15</div>
@@ -143,6 +149,35 @@
     { ate: 9, titulo: "Vale estudar o assunto", texto: "Há sinais suficientes para olhar com calma. Uma análise do seu caso mostra se a holding compensa ou se outro instrumento resolve melhor." },
     { ate: 15, titulo: "Vale olhar com atenção", texto: "Você marcou muitos dos sinais em que uma holding costuma fazer sentido. O próximo passo é analisar os números e a situação da família para escolher o melhor caminho." },
   ];
+  // Quem marcou sinais de família ou interesse, mas nenhum bem ou empresa.
+  var SEM_PATRIMONIO = "Você marcou sinais importantes sobre família e futuro, mas não indicou imóveis, investimentos ou empresa. A holding serve para organizar bens; sem patrimônio para colocar nela, um testamento ou um planejamento mais simples tende a resolver melhor. Se a sua situação mudar, refaça o checklist.";
+
+  // Animação curta de "calculando" antes de mostrar o resultado (pula para quem prefere menos movimento).
+  var ETAPAS = ["Analisando o patrimônio", "Analisando família e sucessão", "Analisando empresa e proteção", "Analisando impostos e organização"];
+  function calcular(pronto) {
+    var caixa = document.getElementById("calculando");
+    var res = document.getElementById("resultado");
+    res.classList.remove("visivel");
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { pronto(); return; }
+    var etapa = document.getElementById("calc-etapa"), barra = document.getElementById("calc-progresso");
+    var botao = form.querySelector('button[type="submit"]');
+    if (botao) botao.disabled = true;
+    caixa.hidden = false;
+    barra.style.width = "0%";
+    caixa.scrollIntoView({ behavior: "smooth", block: "center" });
+    var i = 0;
+    etapa.textContent = ETAPAS[0];
+    requestAnimationFrame(function () { barra.style.width = "100%"; });
+    var t = setInterval(function () {
+      i++;
+      if (i < ETAPAS.length) { etapa.textContent = ETAPAS[i]; return; }
+      clearInterval(t);
+      caixa.hidden = true;
+      if (botao) botao.disabled = false;
+      pronto();
+    }, 550);
+  }
+
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var pontos = 0, respondidas = 0;
@@ -159,12 +194,15 @@
       return form.querySelector('input[name="q' + n + '"]:checked').value === "1";
     });
     var faixa = temPatrimonio ? faixas.filter(function (f) { return pontos <= f.ate; })[0] : faixas[0];
+    var texto = temPatrimonio ? faixa.texto : SEM_PATRIMONIO;
     document.getElementById("pontos").textContent = pontos;
     document.getElementById("res-titulo").textContent = faixa.titulo;
-    document.getElementById("res-texto").textContent = faixa.texto;
-    var res = document.getElementById("resultado");
-    res.classList.add("visivel");
-    res.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("res-texto").textContent = texto;
+    calcular(function () {
+      var res = document.getElementById("resultado");
+      res.classList.add("visivel");
+      res.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   });
 })();
 </script>
