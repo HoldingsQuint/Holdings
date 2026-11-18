@@ -190,19 +190,24 @@
   async function ligarRetorno() {
     var erro = $("erro-asaas"), okk = $("ok-asaas"), b = $("b-asaas");
     erro.classList.remove("visivel"); okk.classList.add("oculto");
-    var codigo = String(S.linkPagamento || "").split("?")[0].replace(/\/$/, "").split("/").pop();
+    function cod(u) { return String(u || "").split("?")[0].replace(/\/$/, "").split("/").pop(); }
+    var codigos = [cod(S.linkPagamento), cod(S.linkPagamentoVista)].filter(Boolean);
+    var codigo = codigos[0];
     var s = (await db.auth.getSession()).data.session;
     if (!s || !codigo) { erro.textContent = "Entre de novo e confira o link de pagamento no config."; erro.classList.add("visivel"); return; }
     b.disabled = true;
     try {
-      var r = await fetch(S.supabaseUrl + "/functions/v1/asaas-config", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", apikey: S.supabaseKey, Authorization: "Bearer " + s.access_token },
-        body: JSON.stringify({ codigo: codigo }),
-      });
-      var j = await r.json().catch(function () { return {}; });
-      if (!r.ok) throw new Error(j.erro || ("erro " + r.status));
-      okk.textContent = "Pronto. Depois de pagar, o cliente vai para " + j.retorno;
+      var j = {};
+      for (var i = 0; i < codigos.length; i++) {
+        var r = await fetch(S.supabaseUrl + "/functions/v1/asaas-config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S.supabaseKey, Authorization: "Bearer " + s.access_token },
+          body: JSON.stringify({ codigo: codigos[i] }),
+        });
+        j = await r.json().catch(function () { return {}; });
+        if (!r.ok) throw new Error((j.erro || ("erro " + r.status)) + " (link " + (i + 1) + ")");
+      }
+      okk.textContent = "Pronto (" + codigos.length + " links). Depois de pagar, o cliente vai para " + j.retorno;
       okk.classList.remove("oculto");
     } catch (e) {
       erro.textContent = "Não deu certo: " + e.message;

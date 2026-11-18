@@ -100,7 +100,7 @@
         el.href = "#";
         el.addEventListener("click", function (e) { e.preventDefault(); });
         el.appendChild(document.createTextNode(" "));
-        el.appendChild(pendente(chave === "linkPagamento" ? "link de pagamento" : "link da agenda"));
+        el.appendChild(pendente(chave.indexOf("linkPagamento") === 0 ? "link de pagamento" : "link da agenda"));
       }
     });
     document.querySelectorAll("[data-ano]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
@@ -122,7 +122,7 @@
       window.fbq("track", evento);
     }
     // Clique em "Confirmar e agendar" (ida para o pagamento).
-    document.querySelectorAll('[data-link="linkPagamento"]').forEach(function (el) {
+    document.querySelectorAll('[data-link^="linkPagamento"]').forEach(function (el) {
       el.addEventListener("click", function () { window.fbq("track", "InitiateCheckout"); });
     });
   }
