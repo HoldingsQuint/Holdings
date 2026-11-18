@@ -9,6 +9,14 @@
     zap.value = d.length > 6 ? "(" + d.slice(0, 2) + ") " + d.slice(2, d.length - 4) + "-" + d.slice(-4)
       : d.length > 2 ? "(" + d.slice(0, 2) + ") " + d.slice(2) : d;
   });
+  // Zero herdeiros: as perguntas sobre herdeiro menor e filhos de relações diferentes somem.
+  form.herdeiros.addEventListener("input", function () {
+    var zero = form.herdeiros.value !== "" && parseInt(form.herdeiros.value, 10) === 0;
+    form.querySelectorAll("[data-depende-herdeiros]").forEach(function (c) {
+      c.hidden = zero;
+      if (zero) c.querySelectorAll("input").forEach(function (i) { i.checked = false; });
+    });
+  });
   function radio(nome) { var r = form.querySelector('input[name="' + nome + '"]:checked'); return r ? r.value : null; }
 
   form.addEventListener("submit", async function (e) {

@@ -7,7 +7,7 @@
   <title>Sessão confirmada | Holdings Quintiliano</title>
   <link rel="icon" href="../../assets/logo.png">
   <link rel="stylesheet" href="../../assets/fontes.css">
-  <link rel="stylesheet" href="../../assets/estilo.css?v=20261118b">
+  <link rel="stylesheet" href="../../assets/estilo.css?v=20261118c">
   <script src="../../assets/config.js?v=20261117c"></script>
   <script src="../../assets/site.js?v=20261117c" defer></script>
 </head>
@@ -46,8 +46,8 @@
           <div class="campo"><label for="f-estado_civil">Estado civil</label><select id="f-estado_civil" name="estado_civil"><option value="">Selecione</option><option value="solteiro">Solteiro(a)</option><option value="casado">Casado(a)</option><option value="uniao_estavel">União estável</option><option value="divorciado">Divorciado(a)</option><option value="viuvo">Viúvo(a)</option></select></div>
           <div class="campo"><label for="f-regime_bens">Regime de bens (se casado ou em união estável)</label><select id="f-regime_bens" name="regime_bens"><option value="">Selecione</option><option value="comunhao_parcial">Comunhão parcial</option><option value="comunhao_universal">Comunhão universal</option><option value="separacao_total">Separação total</option><option value="participacao_final">Participação final nos aquestos</option><option value="nao_sei">Não sei</option></select></div>
         <div class="campo"><label for="f-herdeiros">Quantos herdeiros (filhos, cônjuge, outros)?</label><input id="f-herdeiros" name="herdeiros" type="number" min="0" max="50" inputmode="numeric"></div>
-          <div class="campo"><label>Algum herdeiro é menor de idade?</label><div class="opcoes"><label><input type="radio" name="herdeiro_menor" value="sim"><span>Sim</span></label><label><input type="radio" name="herdeiro_menor" value="nao"><span>Não</span></label></div></div>
-          <div class="campo"><label>Há filhos de relacionamentos diferentes?</label><div class="opcoes"><label><input type="radio" name="filhos_relacoes_diferentes" value="sim"><span>Sim</span></label><label><input type="radio" name="filhos_relacoes_diferentes" value="nao"><span>Não</span></label></div></div>
+          <div class="campo" data-depende-herdeiros><label>Algum herdeiro é menor de idade?</label><div class="opcoes"><label><input type="radio" name="herdeiro_menor" value="sim"><span>Sim</span></label><label><input type="radio" name="herdeiro_menor" value="nao"><span>Não</span></label></div></div>
+          <div class="campo" data-depende-herdeiros><label>Há filhos de relacionamentos diferentes?</label><div class="opcoes"><label><input type="radio" name="filhos_relacoes_diferentes" value="sim"><span>Sim</span></label><label><input type="radio" name="filhos_relacoes_diferentes" value="nao"><span>Não</span></label></div></div>
 
         <p class="bloco-titulo">Patrimônio</p>
           <div class="campo"><label for="f-imoveis">Quantos imóveis (incluindo a casa onde mora)?</label><select id="f-imoveis" name="imoveis"><option value="">Selecione</option><option value="0">Nenhum</option><option value="1">1</option><option value="2-5">2 a 5</option><option value="6-10">6 a 10</option><option value="10+">Mais de 10</option></select></div>
@@ -85,7 +85,7 @@
     </div>
   </div>
 </main>
-<script src="ficha.js?v=20261118a" defer></script>
+<script src="ficha.js?v=20261118b" defer></script>
 
 <footer class="rodape">
   <div class="container">

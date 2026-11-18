@@ -198,6 +198,7 @@ p { margin: 0 0 1em; }
 @keyframes aparecer { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 .calculando { margin-top: 28px; padding: 28px 20px; text-align: center; background: var(--azul-claro); border-radius: 10px; }
 .calculando[hidden] { display: none; }
+.pergunta[hidden], .campo[hidden] { display: none; }
 .calc-roda { width: 42px; height: 42px; margin: 0 auto 14px; border-radius: 50%; border: 4px solid rgba(31, 95, 174, .2); border-top-color: var(--azul); animation: girar .8s linear infinite; }
 @keyframes girar { to { transform: rotate(360deg); } }
 .calc-titulo { margin: 0 0 4px; font-weight: 600; color: var(--marinho); }

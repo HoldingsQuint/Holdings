@@ -7,7 +7,7 @@
   <title>Checklist: sua família precisa de uma holding? | Holdings Quintiliano</title>
   <link rel="icon" href="../assets/logo.png">
   <link rel="stylesheet" href="../assets/fontes.css">
-  <link rel="stylesheet" href="../assets/estilo.css?v=20261118b">
+  <link rel="stylesheet" href="../assets/estilo.css?v=20261118c">
   <script src="../assets/config.js?v=20261117c"></script>
   <script src="../assets/site.js?v=20261117c" defer></script>
 </head>
@@ -53,7 +53,7 @@
           <p>Você tem herdeiros?<small>Filhos, cônjuge ou companheiro, enteados, pais ou irmãos. Havendo herdeiros, vale pensar em como os bens serão passados.</small></p>
           <div class="opcoes"><label><input type="radio" name="q5" value="1"><span>Sim</span></label><label><input type="radio" name="q5" value="0"><span>Não</span></label></div>
         </div>
-        <div class="pergunta">
+        <div class="pergunta" data-depende-herdeiros>
           <p>Há filhos de relacionamentos diferentes, ou herdeiros que não se entendem bem?<small>São situações em que regras definidas em vida costumam evitar disputas depois.</small></p>
           <div class="opcoes"><label><input type="radio" name="q6" value="1"><span>Sim</span></label><label><input type="radio" name="q6" value="0"><span>Não</span></label></div>
         </div>
@@ -61,7 +61,7 @@
           <p>Você gostaria de decidir hoje como os bens serão administrados no futuro?<small>Quem administra, como se vota, o que pode ou não ser vendido.</small></p>
           <div class="opcoes"><label><input type="radio" name="q7" value="1"><span>Sim</span></label><label><input type="radio" name="q7" value="0"><span>Não</span></label></div>
         </div>
-        <div class="pergunta">
+        <div class="pergunta" data-depende-herdeiros>
           <p>Algum herdeiro é menor de idade ou precisaria de apoio para cuidar de bens?<small>Nesses casos, deixar a administração organizada faz ainda mais diferença.</small></p>
           <div class="opcoes"><label><input type="radio" name="q8" value="1"><span>Sim</span></label><label><input type="radio" name="q8" value="0"><span>Não</span></label></div>
         </div>
@@ -177,6 +177,24 @@
       pronto();
     }, 550);
   }
+
+  // Sem herdeiros (q5 = Não), as perguntas sobre filhos de relações diferentes (q6) e herdeiro menor (q8)
+  // somem e contam como "Não".
+  function ajustarHerdeiros() {
+    var q5 = form.querySelector('input[name="q5"]:checked');
+    var esconder = !!q5 && q5.value === "0";
+    form.querySelectorAll("[data-depende-herdeiros]").forEach(function (bloco) {
+      bloco.hidden = esconder;
+      if (esconder) {
+        var nao = bloco.querySelector('input[value="0"]');
+        if (nao) nao.checked = true;
+      }
+    });
+  }
+  form.addEventListener("change", function (e) {
+    if (e.target && e.target.name === "q5") ajustarHerdeiros();
+  });
+  ajustarHerdeiros();
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
