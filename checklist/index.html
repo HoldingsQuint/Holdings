@@ -135,6 +135,9 @@
   var form = document.getElementById("checklist");
   var faltam = document.getElementById("faltam");
   var TOTAL = 15;
+  // Perguntas de patrimônio: imóveis (q1), aluguel (q2), investimentos (q3), bens em lugares diferentes (q4), empresa (q9).
+  // Sem nenhum "sim" nelas, o resultado é sempre a primeira faixa, qualquer que seja a pontuação.
+  var PATRIMONIO = [1, 2, 3, 4, 9];
   var faixas = [
     { ate: 4, titulo: "Provavelmente não é prioridade agora", texto: "Pelos seus sinais, uma holding talvez não seja necessária neste momento. Ainda assim, vale manter documentos em ordem e rever isso se o patrimônio ou a família mudarem." },
     { ate: 9, titulo: "Vale estudar o assunto", texto: "Há sinais suficientes para olhar com calma. Uma análise do seu caso mostra se a holding compensa ou se outro instrumento resolve melhor." },
@@ -152,7 +155,10 @@
       return;
     }
     faltam.textContent = "";
-    var faixa = faixas.filter(function (f) { return pontos <= f.ate; })[0];
+    var temPatrimonio = PATRIMONIO.some(function (n) {
+      return form.querySelector('input[name="q' + n + '"]:checked').value === "1";
+    });
+    var faixa = temPatrimonio ? faixas.filter(function (f) { return pontos <= f.ate; })[0] : faixas[0];
     document.getElementById("pontos").textContent = pontos;
     document.getElementById("res-titulo").textContent = faixa.titulo;
     document.getElementById("res-texto").textContent = faixa.texto;
