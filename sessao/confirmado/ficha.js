@@ -31,7 +31,7 @@
       estado_civil: form.estado_civil.value, regime_bens: form.regime_bens.value,
       herdeiros: isNaN(h) ? null : h,
       herdeiro_menor: radio("herdeiro_menor"), filhos_relacoes_diferentes: radio("filhos_relacoes_diferentes"),
-      imoveis: form.imoveis.value, valor_imoveis: form.valor_imoveis.value,
+      imoveis: form.imoveis.value, valor_imoveis: form.valor_imoveis.value, valor_imoveis_ir: form.valor_imoveis_ir.value,
       aluguel: radio("aluguel"), rural: radio("rural"), empresa: radio("empresa"),
       empresa_descricao: form.empresa_descricao.value,
       investimentos: form.investimentos.value,

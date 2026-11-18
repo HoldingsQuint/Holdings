@@ -97,6 +97,7 @@ p { margin: 0 0 1em; }
 .campo input:focus, .campo select:focus, .campo textarea:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(22, 97, 199, .15); }
 .campo.invalido input { border-color: var(--erro); }
 .campo textarea { resize: vertical; }
+.campo .ajuda { display: block; color: var(--texto-suave); font-size: .85rem; margin-top: 4px; line-height: 1.4; }
 .campo .opcoes input { width: auto; }
 #form-ficha .bloco-titulo { margin: 22px 0 10px; }
 .objetivos { display: grid; gap: 8px; }
